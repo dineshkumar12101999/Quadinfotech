@@ -1,0 +1,119 @@
+ENGINEERING REPORT QA Automation Framework – SauceDemo (BDD)
+
+  ------------------------------------
+  1. Framework Architecture Decision
+  ------------------------------------
+
+The framework follows a clean separation of concerns using:
+
+-   features/ -> Business-readable Gherkin scenarios
+-   steps/ -> Step definitions (no selectors)
+-   pages/ -> Page Objects (all locators centralized)
+-   support/ -> Hooks, driver factory, DB utility
+-   config/ -> Environment configuration
+-   testdata/ -> Externalized test data
+
+This structure ensures maintainability, reusability, and scalability. It
+follows industry-standard BDD + Page Object Model design.
+
+  --------------------------------
+  2. BDD Implementation Strategy
+  --------------------------------
+
+BDD was implemented using Cucumber with Playwright.
+
+Flow: Feature File -> Step Definition -> Page Object -> Browser Action
+
+Benefits: - Business-readable test cases - Clear mapping between
+behavior and implementation - Improved collaboration between QA and
+stakeholders
+
+  -----------------------------
+  3. Locator Strategy Quality
+  -----------------------------
+
+Primary (Robust) Strategy: [data-test=“add-to-cart-sauce-labs-backpack”]
+
+Reasons: - Stable attribute designed for automation - Not dependent on
+UI structure - Resistant to layout changes
+
+Fallback Strategy: Text-based filtering using product name and role
+selector. Used only if data-test attribute is unavailable.
+
+Avoided: - Index-based selection - Long brittle XPath chains
+
+  -----------------------------
+  4. Test Stability Practices
+  -----------------------------
+
+-   No hard sleeps used
+-   Playwright auto-wait mechanism leveraged
+-   Assertion-based synchronization
+-   Centralized locators in Page Objects
+-   Screenshot capture on failure
+
+This reduces flakiness and improves reliability.
+
+  -------------------------
+  5. Test Data Management
+  -------------------------
+
+Test data is externalized under /testdata. Credentials and configuration
+are environment-driven via .env. This prevents hardcoding sensitive
+data.
+
+  -------------------------------------------
+  6. Database Validation Integration Design
+  -------------------------------------------
+
+Although SauceDemo does not provide DB access, a reusable DB utility is
+implemented to demonstrate real-world integration.
+
+DB Utility Features: - Config-driven connection - Query execution
+method - Proper error handling - Clean connection teardown
+
+Example Flow: 1. Complete order via UI 2. Capture Order ID 3. Execute
+SQL query: SELECT * FROM orders WHERE order_id = ‘12345’; 4. Assert
+record exists 5. Cleanup test data 6. Implement retry logic for eventual
+consistency
+
+This demonstrates enterprise-level readiness.
+
+  -----------------------------------------
+  7. Scalability Strategy (50+ Scenarios)
+  -----------------------------------------
+
+-   Reusable step definitions
+-   Modular page objects
+-   Tag-based execution
+-   Parallel execution support
+-   CI/CD integration capability
+
+  -----------------------------
+  8. CI/CD Execution Strategy
+  -----------------------------
+
+-   Headless execution via environment config
+-   npm test command for pipeline integration
+-   GitHub Actions workflow included
+-   Supports automated test execution on pull requests
+
+  --------------------------------
+  9. Improvements with More Time
+  --------------------------------
+
+1.  Add Allure reporting
+2.  Implement retry logic wrapper
+3.  Dockerize execution environment
+4.  Enable parallel execution
+5.  Add API + UI hybrid validation
+
+  ----------------
+  10. Conclusion
+  ----------------
+
+This framework demonstrates: - Clean architecture - Stable automation
+practices - Scalable BDD implementation - Integration-ready backend
+validation design - CI/CD readiness
+
+The solution aligns with enterprise automation standards.
